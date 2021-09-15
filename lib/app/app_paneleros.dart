@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:paneleros_app/app/pages/home_page.dart';
 import 'package:paneleros_app/app/pages/emisora_page.dart';
 import 'package:paneleros_app/app/pages/biblioteca_page.dart';
+import 'package:paneleros_app/app/pages/login_page.dart';
 import 'package:paneleros_app/app/pages/podcast_page.dart';
 import 'package:paneleros_app/app/pages/cursos_page.dart';
+import 'package:paneleros_app/app/pages/recoverpassword_page.dart';
+import 'package:paneleros_app/app/pages/signup_page.dart';
 import 'package:paneleros_app/app/pages/splash_page.dart';
 
 class AppPaneleros extends StatelessWidget {
@@ -13,15 +16,22 @@ class AppPaneleros extends StatelessWidget {
     return MaterialApp(
       title: 'Cenicaña',
       theme: ThemeData(
-          primaryColor: Colors.blue.shade500,
-          textSelectionTheme: TextSelectionThemeData(
-            selectionColor: Colors.blue.shade500,
-          ),
+        primaryColor: Colors.blue.shade500,
+        textSelectionTheme: TextSelectionThemeData(
+          selectionColor: Colors.blue.shade500,
+        ),
+        buttonTheme: ButtonThemeData(
           buttonColor: Colors.blue.shade500,
-          accentColor: Colors.blue.shade500,
-          bottomAppBarColor: Colors.white),
+        ),
+        bottomAppBarColor: Colors.white,
+        colorScheme:
+            ColorScheme.fromSwatch().copyWith(secondary: Colors.blue.shade500),
+      ),
       home: SplashPage(),
       routes: {
+        LoginPage.routeName: (_) => LoginPage(),
+        SignupPage.routeName: (_) => SignupPage(),
+        RecoverPasswordPage.routeName: (_) => RecoverPasswordPage(),
         SplashPage.routeName: (BuildContext context) => SplashPage(),
         HomePage.routeName: (BuildContext context) => HomePage(),
         EmisoraPage.routeName: (BuildContext context) => EmisoraPage(),
