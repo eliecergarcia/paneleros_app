@@ -27,7 +27,7 @@ class AppPaneleros extends StatelessWidget {
         colorScheme:
             ColorScheme.fromSwatch().copyWith(secondary: Colors.blue.shade500),
       ),
-      home: SplashPage(),
+      home: LoginPage(),
       routes: {
         LoginPage.routeName: (_) => LoginPage(),
         SignupPage.routeName: (_) => SignupPage(),

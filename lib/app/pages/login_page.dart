@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:paneleros_app/app/api/apisql.dart';
-import 'package:paneleros_app/app/pages/home_page.dart';
 import 'package:paneleros_app/app/pages/recoverpassword_page.dart';
 import 'package:paneleros_app/app/pages/signup_page.dart';
+import 'package:paneleros_app/app/pages/splash_page.dart';
 import 'package:paneleros_app/app/widgets/inputfile.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,6 +14,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String _email, _password;
+  bool correctEmail = true;
   ApiConnect apiConnect = ApiConnect();
   bool _isInAsyncCall = false;
   bool loginSucces = false;
@@ -41,7 +42,8 @@ class _LoginPageState extends State<LoginPage> {
                   Column(
                     children: <Widget>[
                       const Text(
-                        "Iniciar Sesion",
+                        "La Voz De Los Panaleros\nIniciar Sesión",
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 30, fontWeight: FontWeight.bold),
                       ),
@@ -61,6 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                               _email = value;
                             });
                           },
+                          validator: validateEmail,
                         ),
                         inputFile(
                           label: "Contraseña",
@@ -88,33 +91,39 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       child: MaterialButton(
+                        disabledTextColor: Colors.grey,
+                        disabledColor: Colors.grey,
                         minWidth: double.infinity,
                         height: 60,
-                        onPressed: () async {
-                          _isInAsyncCall = true;
-                          if (_password == null || _email == null) {
-                            _showAlertTextFieldEmpty(context);
-                          } else {
-                            loginSucces =
-                                await apiConnect.login(_email, _password);
-                            if (loginSucces) {
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomePage()));
-                            } else {
-                              _showAlertLoginFail(context);
-                            }
-                          }
-                          _isInAsyncCall = false;
-                        },
+                        onPressed: (correctEmail)
+                            ? () async {
+                                _isInAsyncCall = true;
+                                if (_password == null || _email == null) {
+                                  _showAlertTextFieldEmpty(context);
+                                } else {
+                                  loginSucces =
+                                      await apiConnect.login(_email, _password);
+                                  if (loginSucces) {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => SplashPage(),
+                                      ),
+                                    );
+                                  } else {
+                                    _showAlertLoginFail(context);
+                                  }
+                                }
+                                _isInAsyncCall = false;
+                              }
+                            : null,
                         color: Color(0xff0095FF),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
                         ),
                         child: Text(
-                          "Iniciar Sesión",
+                          "Iniciar Sesión ",
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 18,
@@ -155,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                           });
                         },
                         child: Text(
-                          "Registrate",
+                          "Regístrate",
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 18,
@@ -180,6 +189,22 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+//validacion del correo
+  String validateEmail(String value) {
+    final Pattern pattern =
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?)*$";
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value)) {
+      correctEmail = false;
+      return 'Ingresa un Correo Valido';
+    } else {
+      correctEmail = true;
+      return null;
+    }
   }
 
   Future<void> _showAlertTextFieldEmpty(BuildContext context) async {

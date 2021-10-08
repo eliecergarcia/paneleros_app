@@ -36,11 +36,11 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         constraints: BoxConstraints.expand(),
         decoration: BoxDecoration(
-            // image: DecorationImage(
-            //   image: AssetImage("assets/images/imginicial.jpg"),
-            //   fit: BoxFit.cover,
-            // ),
-            ),
+          image: DecorationImage(
+            image: AssetImage("assets/imginicial.png"),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:paneleros_app/app/api/apisql.dart';
 import 'package:paneleros_app/app/widgets/inputfile.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'login_page.dart';
 
 class SignupPage extends StatefulWidget {
   static final String routeName = 'signup_page';
@@ -11,6 +14,7 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   bool _inAsyncCall = false;
+  bool correctEmail = true, createuser = false;
   ApiConnect apiConnect = ApiConnect();
   bool isChecked = false;
   String _firstName,
@@ -21,7 +25,9 @@ class _SignupPageState extends State<SignupPage> {
       _password,
       _rePassword,
       _apartment,
-      _cellphone;
+      _cellphone,
+      _city,
+      _useInfo;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +60,7 @@ class _SignupPageState extends State<SignupPage> {
                 Column(
                   children: <Widget>[
                     Text(
-                      "Registrate",
+                      "Regístrate",
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
@@ -107,13 +113,21 @@ class _SignupPageState extends State<SignupPage> {
                       },
                     ),
                     inputFile(
-                      label: "Correo",
+                      label: "Correo elétronico",
                       function: (value) {
                         setState(() {
                           _email = value;
                         });
                       },
+                      validator: validateEmail,
                     ),
+                    inputFile(
+                        label: 'Municipio',
+                        function: (value) {
+                          setState(() {
+                            _city = value;
+                          });
+                        }),
                     inputFile(
                       label: "Departamento",
                       function: (value) {
@@ -165,7 +179,12 @@ class _SignupPageState extends State<SignupPage> {
                         });
                       },
                     ),
-                    Text('Aceptas los terminos y condiciones'),
+                    TextButton(
+                        onPressed: () async {
+                          await launch(
+                              'https://www.agrogestion.com.co/docs/Datos%20Personales.pdf');
+                        },
+                        child: Text('Aceptas los terminos y condiciones')),
                   ],
                 ),
                 SizedBox(
@@ -183,25 +202,52 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
                   child: MaterialButton(
+                    disabledTextColor: Colors.grey,
+                    disabledColor: Colors.grey,
                     minWidth: double.infinity,
                     height: 60,
-                    onPressed: () async {
-                      //await apiConnect.createUser('firstName', 'secondName', 'firstLastName', 'secondLastName', 'email', 'password', 'apartment', 15, 1);
-                      setState(() {
-                        if (_firstName == null ||
-                            _secondName == null ||
-                            _lastName == null ||
-                            _email == null ||
-                            _apartment == null ||
-                            _cellphone == null ||
-                            _password == null ||
-                            _rePassword == null) {
-                          _showAlertTextFieldEmpty(context);
-                        } else if (_rePassword != _password) {
-                          _showAlertTextPasswordIncorrect(context);
-                        }
-                      });
-                    },
+                    onPressed: (correctEmail)
+                        ? () async {
+                            //await apiConnect.createUser('firstName', 'secondName', 'firstLastName', 'secondLastName', 'email', 'password', 'apartment', 15, 1);
+
+                            if (_firstName == null ||
+                                _lastName == null ||
+                                _email == null ||
+                                _apartment == null ||
+                                _cellphone == null ||
+                                _password == null ||
+                                _rePassword == null) {
+                              _showAlertTextFieldEmpty(context);
+                            } else if (_rePassword != _password) {
+                              _showAlertTextPasswordIncorrect(context);
+                            } else {
+                              if (isChecked) {
+                                _useInfo = 'SI';
+                                createuser = await apiConnect.createUser(
+                                  _firstName,
+                                  _secondName,
+                                  _lastName,
+                                  _lastNameTwo,
+                                  _email,
+                                  _password,
+                                  _apartment,
+                                  int.parse(_cellphone),
+                                  _useInfo,
+                                  _city,
+                                );
+                                if (createuser) {
+                                  _showAlertSuccess(context).then((_) =>
+                                      Navigator.popAndPushNamed(
+                                          context, LoginPage.routeName));
+                                } else if (!createuser) {
+                                  _showFalseSuccess(context);
+                                }
+                              } else {
+                                _showAlertCheckBox(context);
+                              }
+                            }
+                          }
+                        : null,
                     color: Color(0xff0095FF),
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -216,20 +262,6 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text("¿Ya tienes una cuenta?"),
-                    Text(
-                      " Inicia Sesión",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
-                    )
-                  ],
                 ),
                 SizedBox(
                   height: 20,
@@ -272,6 +304,118 @@ class _SignupPageState extends State<SignupPage> {
         );
       },
     );
+  }
+
+  Future<void> _showFalseSuccess(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'El correo ya existe',
+            textAlign: TextAlign.center,
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text(
+                  'Favor de registrarse con otro correo.',
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showAlertSuccess(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Usuario Creado',
+            textAlign: TextAlign.center,
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text(
+                  'Inicia sesión con tu correo y contraseña proporcionados.',
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showAlertCheckBox(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Favor de Aceptar los Terminos y Condiciones',
+            textAlign: TextAlign.center,
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text(
+                  'Si no son Aceptados no se permite cambiar crear la cuenta.',
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+//validacion del correo
+  String validateEmail(String value) {
+    final Pattern pattern =
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?)*$";
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value)) {
+      correctEmail = false;
+      return 'Ingresa un Correo Valido';
+    } else {
+      correctEmail = true;
+      return null;
+    }
   }
 
   Future<void> _showAlertTextPasswordIncorrect(BuildContext context) async {

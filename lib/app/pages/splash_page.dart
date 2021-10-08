@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:paneleros_app/app/pages/login_page.dart';
+import 'package:paneleros_app/app/pages/home_page.dart';
+
 
 class SplashPage extends StatefulWidget {
   static final String routeName = 'splash';
@@ -91,6 +92,6 @@ class _SplashPageState extends State<SplashPage> {
                 }
               },
             )))
-        : LoginPage();
+        : HomePage();
   }
 }
