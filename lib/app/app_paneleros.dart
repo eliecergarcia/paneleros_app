@@ -9,6 +9,7 @@ import 'package:paneleros_app/app/pages/cursos_page.dart';
 import 'package:paneleros_app/app/pages/recoverpassword_page.dart';
 import 'package:paneleros_app/app/pages/signup_page.dart';
 import 'package:paneleros_app/app/pages/splash_page.dart';
+import 'package:paneleros_app/app/pages/update_password_page.dart';
 
 class AppPaneleros extends StatelessWidget {
   @override
@@ -32,6 +33,7 @@ class AppPaneleros extends StatelessWidget {
         LoginPage.routeName: (_) => LoginPage(),
         SignupPage.routeName: (_) => SignupPage(),
         RecoverPasswordPage.routeName: (_) => RecoverPasswordPage(),
+        UpdatePasswordPage.id: (_) => UpdatePasswordPage(),
         SplashPage.routeName: (BuildContext context) => SplashPage(),
         HomePage.routeName: (BuildContext context) => HomePage(),
         EmisoraPage.routeName: (BuildContext context) => EmisoraPage(),

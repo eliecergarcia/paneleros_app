@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:paneleros_app/app/pages/pdf_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'home_page.dart';
@@ -18,7 +17,7 @@ class BibliotecaPage extends StatefulWidget {
 class _BibliotecaPagePageState extends State<BibliotecaPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var _url = 'http://agrogestion.com.co/app/biblioteca.html';
-  final _key = UniqueKey();
+  //final _key = UniqueKey();
 
   @override
   void initState() {
@@ -57,18 +56,6 @@ class _BibliotecaPagePageState extends State<BibliotecaPage> {
               await launch(request.url);
               return null;
             },
-            // navigationDelegate: (NavigationRequest request) async {
-            //   if (request.url.endsWith('.pdf')) {
-            //     Navigator.push(
-            //         context,
-            //         MaterialPageRoute(
-            //           builder: (context) => ViewPdfPage(request.url),
-            //         ));
-
-            //     return NavigationDecision.navigate;
-            //   }
-            //   return NavigationDecision.navigate;
-            // },
             gestureNavigationEnabled: true,
           )),
     );
