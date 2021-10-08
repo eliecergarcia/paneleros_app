@@ -4,6 +4,7 @@ import 'package:paneleros_app/app/api/apisql.dart';
 import 'package:paneleros_app/app/pages/recoverpassword_page.dart';
 import 'package:paneleros_app/app/pages/signup_page.dart';
 import 'package:paneleros_app/app/pages/splash_page.dart';
+import 'package:paneleros_app/app/pages/update_password_page.dart';
 import 'package:paneleros_app/app/widgets/inputfile.dart';
 
 class LoginPage extends StatefulWidget {
@@ -137,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RecoverPasswordPage(),
+                        builder: (context) => UpdatePasswordPage(),
                       ),
                     ),
                     child: Text(

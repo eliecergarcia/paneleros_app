@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:paneleros_app/app/api/send_mail.dart';
 
-class ApiConnect {
+class ApiConnect extends SendEmail {
   ///Funcion para dar de alta usuarios
   Future<bool> createUser(
       String firstName,
@@ -27,6 +28,7 @@ class ApiConnect {
       'Municipio': city,
       'Password': password,
       'usaDatos': useInfo,
+      'CambioContrasena': 'No',
     });
     var responseInfo = json.decode(response.body);
     print(responseInfo);
@@ -79,7 +81,28 @@ class ApiConnect {
         return false;
       }
     } else {
-      print('false');
+      return false;
+    }
+  }
+
+  //Funcion para soliticar actualizar la contrasena
+  Future<bool> updatePassword(String email) async {
+    var url = "";
+    bool sendMail = false;
+    String passwordUpdate = '';
+    final response = await http.post(Uri.parse(url), body: {
+      'email': email,
+    });
+    var responseInfo = jsonDecode(response.body);
+    print(responseInfo);
+    if (response.toString().length > 3) {
+      sendMail = await sendEmail(email, 'Panaleros2022');
+      if (sendMail) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
       return false;
     }
   }
