@@ -103,20 +103,18 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
                 height: 60,
                 onPressed: (correctEmail)
                     ? () async {
-                        setState(() async {
-                          _isInAsyncCall = true;
-                          if (email == null) {
-                            _showInValidEmail(context);
+                        _isInAsyncCall = true;
+                        if (email == null) {
+                          _showInValidEmail(context);
+                        } else {
+                          _existEmail =
+                              await apiConnect.updatePassword(email, 1);
+                          if (_existEmail) {
+                            _showAlertSucces(context);
                           } else {
-                            _existEmail =
-                                await apiConnect.updatePassword(email);
-                            if (_existEmail) {
-                              _showAlertSucces(context);
-                            } else {
-                              _showTryLater(context);
-                            }
+                            _showTryLater(context);
                           }
-                        });
+                        }
                       }
                     : null,
                 color: Color(0xff0095FF),
@@ -179,7 +177,7 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
             child: ListBody(
               children: const <Widget>[
                 Text(
-                  'Se te ha enviado un correo con una contraseña temporal, al correo con el cual te registraste.',
+                  'Se te ha enviado un correo con una contraseña temporal, al correo con el cual te registraste. Favor de revisar tu bandeja de entrada y la de spam',
                   textAlign: TextAlign.center,
                 ),
               ],

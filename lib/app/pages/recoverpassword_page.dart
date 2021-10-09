@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:paneleros_app/app/api/apisql.dart';
-import 'package:paneleros_app/app/pages/login_page.dart';
+import 'package:paneleros_app/app/pages/splash_page.dart';
 import 'package:paneleros_app/app/widgets/inputfile.dart';
 
 class RecoverPasswordPage extends StatefulWidget {
@@ -128,7 +128,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> {
                             print('hola');
                             _showAlertTextFieldEmpty(context).then((_) =>
                                 Navigator.pushNamed(
-                                    context, LoginPage.routeName));
+                                    context, SplashPage.routeName));
                           } else {
                             _showAlertSucces(context);
                           }

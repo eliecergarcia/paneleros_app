@@ -1,7 +1,9 @@
 import 'dart:convert';
-
+import 'dart:math';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:paneleros_app/app/api/send_mail.dart';
+import 'package:paneleros_app/app/pages/recoverpassword_page.dart';
 
 class ApiConnect extends SendEmail {
   ///Funcion para dar de alta usuarios
@@ -44,7 +46,8 @@ class ApiConnect extends SendEmail {
   }
 
   ///Funcion para inciar sesion
-  Future<bool> login(String email, String password) async {
+  Future<bool> login(
+      String email, String password, BuildContext context) async {
     var url = 'https://www.agrogestion.com.co/app/flutter/login.php';
     final response = await http.post(Uri.parse(url), body: {
       "email": email.toString(),
@@ -55,6 +58,24 @@ class ApiConnect extends SendEmail {
     if (responseInfo.toString().length > 3) {
       if (responseInfo[0]['password'] == password.toString() &&
           responseInfo[0]['Correo'] == email.toString()) {
+        if (responseInfo[0]['CambioContrasena'] == '1') {
+          var urlPassword =
+              "https://www.agrogestion.com.co/app/flutter/recoverEmail.php";
+          final responsePassword =
+              await http.post(Uri.parse(urlPassword), body: {
+            'email': email,
+            'password': password,
+            'changePassword': '0',
+          }).then(
+            (_) => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RecoverPasswordPage(),
+              ),
+            ),
+          );
+          return true;
+        }
         return true;
       } else {
         return false;
@@ -74,8 +95,7 @@ class ApiConnect extends SendEmail {
     var responseInfo = json.decode(response.body);
     print(responseInfo);
     if (responseInfo.toString().length > 3) {
-      if (responseInfo[0]['password'] == password.toString() &&
-          responseInfo[0]['Correo'] == email.toString()) {
+      if (responseInfo[0]['Correo'] == email.toString()) {
         return true;
       } else {
         return false;
@@ -86,17 +106,21 @@ class ApiConnect extends SendEmail {
   }
 
   //Funcion para soliticar actualizar la contrasena
-  Future<bool> updatePassword(String email) async {
-    var url = "";
+  Future<bool> updatePassword(String email, int changePassword) async {
+    var url = "https://www.agrogestion.com.co/app/flutter/recoverEmail.php";
     bool sendMail = false;
-    String passwordUpdate = '';
+    Random random = new Random();
+    int randomNumber = random.nextInt(100);
+    String passwordUpdate = 'Panaleros' + randomNumber.toString();
     final response = await http.post(Uri.parse(url), body: {
       'email': email,
+      'password': passwordUpdate,
+      'changePassword': changePassword.toString(),
     });
     var responseInfo = jsonDecode(response.body);
     print(responseInfo);
     if (response.toString().length > 3) {
-      sendMail = await sendEmail(email, 'Panaleros2022');
+      sendMail = await sendEmail(email, passwordUpdate);
       if (sendMail) {
         return true;
       } else {

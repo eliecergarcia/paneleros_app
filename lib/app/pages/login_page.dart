@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:paneleros_app/app/api/apisql.dart';
-import 'package:paneleros_app/app/pages/recoverpassword_page.dart';
 import 'package:paneleros_app/app/pages/signup_page.dart';
 import 'package:paneleros_app/app/pages/splash_page.dart';
 import 'package:paneleros_app/app/pages/update_password_page.dart';
@@ -102,8 +101,8 @@ class _LoginPageState extends State<LoginPage> {
                                 if (_password == null || _email == null) {
                                   _showAlertTextFieldEmpty(context);
                                 } else {
-                                  loginSucces =
-                                      await apiConnect.login(_email, _password);
+                                  loginSucces = await apiConnect.login(
+                                      _email, _password, context);
                                   if (loginSucces) {
                                     Navigator.pushReplacement(
                                       context,
