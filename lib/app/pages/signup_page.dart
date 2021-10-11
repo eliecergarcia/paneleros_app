@@ -184,11 +184,12 @@ class _SignupPageState extends State<SignupPage> {
                           await launch(
                               'https://www.agrogestion.com.co/docs/Datos%20Personales.pdf');
                         },
-                        child: Text('Aceptas los terminos y condiciones')),
+                        child: Text(
+                            "De click aquí para ver los términos y\n condiciones, favor de marcar \nla casilla, por último presione\n el botón de registrarse")),
                   ],
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 Container(
                   padding: EdgeInsets.only(top: 3, left: 3),

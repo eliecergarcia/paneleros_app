@@ -111,7 +111,7 @@ class ApiConnect extends SendEmail {
     bool sendMail = false;
     Random random = new Random();
     int randomNumber = random.nextInt(100);
-    String passwordUpdate = 'Panaleros' + randomNumber.toString();
+    String passwordUpdate = 'Paneleros' + randomNumber.toString();
     final response = await http.post(Uri.parse(url), body: {
       'email': email,
       'password': passwordUpdate,

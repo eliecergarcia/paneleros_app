@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
                   Column(
                     children: <Widget>[
                       const Text(
-                        "La Voz De Los Panaleros\nIniciar Sesión",
+                        "La Voz De Los Paneleros\nIniciar Sesión",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 30, fontWeight: FontWeight.bold),
